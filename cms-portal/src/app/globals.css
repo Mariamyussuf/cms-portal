@@ -1,0 +1,294 @@
+@import "tailwindcss";
+
+/* ──────────────────────────────────────────────────────────
+   COLMANS Dark Theme Design System
+   ────────────────────────────────────────────────────────── */
+
+:root {
+  /* Backgrounds — deep, layered darks */
+  --color-bg-primary: #0A0A08;
+  --color-bg-secondary: #111110;
+  --color-bg-tertiary: #1A1A17;
+  --color-bg-elevated: #222220;
+  --color-bg-card: rgba(26, 26, 23, 0.6);
+
+  /* Gold accent — the COLMANS signature */
+  --color-gold-300: #E0C068;
+  --color-gold-400: #C9A24B;
+  --color-gold-500: #B8860B;
+  --color-gold-600: #93690A;
+  --color-gold-700: #6E4E08;
+
+  /* Royal blue — secondary accent */
+  --color-blue-400: #3B82F6;
+  --color-blue-500: #1E40AF;
+  --color-blue-600: #1E3A8A;
+
+  /* Association colors */
+  --color-basa: #3B82F6;   /* Blue — Business Admin */
+  --color-nesa: #10B981;   /* Emerald — Economics */
+  --color-matsa: #8B5CF6;  /* Violet — Marketing/Accounting/Taxation */
+
+  /* Text */
+  --color-text-primary: #F0EDE6;
+  --color-text-secondary: #888880;
+  --color-text-muted: #555550;
+  --color-text-accent: #C9A24B;
+
+  /* Borders */
+  --color-border: rgba(255, 255, 255, 0.07);
+  --color-border-hover: rgba(255, 255, 255, 0.15);
+  --color-border-accent: rgba(201, 162, 75, 0.3);
+
+  /* Status */
+  --color-success: #10B981;
+  --color-error: #EF4444;
+  --color-warning: #F59E0B;
+  --color-info: #3B82F6;
+
+  /* Glow */
+  --glow-gold: 0 0 20px rgba(184, 134, 11, 0.15);
+  --glow-gold-strong: 0 0 40px rgba(184, 134, 11, 0.25);
+  --glow-blue: 0 0 20px rgba(59, 130, 246, 0.15);
+
+  /* Glassmorphism */
+  --glass-bg: rgba(17, 17, 16, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 16px;
+}
+
+@theme inline {
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+
+  --color-bg-primary: var(--color-bg-primary);
+  --color-bg-secondary: var(--color-bg-secondary);
+  --color-bg-tertiary: var(--color-bg-tertiary);
+  --color-bg-elevated: var(--color-bg-elevated);
+
+  --color-gold-300: var(--color-gold-300);
+  --color-gold-400: var(--color-gold-400);
+  --color-gold-500: var(--color-gold-500);
+  --color-gold-600: var(--color-gold-600);
+  --color-gold-700: var(--color-gold-700);
+
+  --color-blue-400: var(--color-blue-400);
+  --color-blue-500: var(--color-blue-500);
+  --color-blue-600: var(--color-blue-600);
+
+  --color-basa: var(--color-basa);
+  --color-nesa: var(--color-nesa);
+  --color-matsa: var(--color-matsa);
+
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
+  --color-text-accent: var(--color-text-accent);
+
+  --color-border: var(--color-border);
+  --color-border-hover: var(--color-border-hover);
+  --color-border-accent: var(--color-border-accent);
+
+  --color-success: var(--color-success);
+  --color-error: var(--color-error);
+  --color-warning: var(--color-warning);
+  --color-info: var(--color-info);
+}
+
+/* ── Reduced Motion ──────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Base ─────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body), system-ui, -apple-system, sans-serif;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+.font-display {
+  font-family: var(--font-display), system-ui, sans-serif;
+}
+
+/* Tabular figures for money and matric-style codes */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Focus ────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-gold-500);
+  outline-offset: 2px;
+}
+
+/* ── Custom Scrollbar ─────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-text-muted);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* ── Glassmorphism Utility ────────────────────────────────── */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+}
+
+.glass-card {
+  background: var(--color-bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--color-border-hover);
+  box-shadow: var(--glow-gold);
+}
+
+/* ── Glow Effects ─────────────────────────────────────────── */
+.glow-gold {
+  box-shadow: var(--glow-gold);
+}
+
+.glow-gold-hover:hover {
+  box-shadow: var(--glow-gold-strong);
+}
+
+.glow-blue {
+  box-shadow: var(--glow-blue);
+}
+
+/* Text glow */
+.text-glow-gold {
+  text-shadow: 0 0 20px rgba(184, 134, 11, 0.3);
+}
+
+/* ── Gradient Utilities ───────────────────────────────────── */
+.gradient-gold {
+  background: linear-gradient(135deg, var(--color-gold-400), var(--color-gold-600));
+}
+
+.gradient-gold-text {
+  background: linear-gradient(135deg, var(--color-gold-300), var(--color-gold-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-dark {
+  background: linear-gradient(180deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 100%);
+}
+
+/* ── Mesh Gradient (Hero Background) ──────────────────────── */
+.mesh-gradient {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(184, 134, 11, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(30, 64, 175, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(139, 92, 246, 0.04) 0%, transparent 50%),
+    var(--color-bg-primary);
+}
+
+/* ── Animation Keyframes ──────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -10%); }
+  20% { transform: translate(-15%, 5%); }
+  30% { transform: translate(7%, -25%); }
+  40% { transform: translate(-5%, 25%); }
+  50% { transform: translate(-15%, 10%); }
+  60% { transform: translate(15%, 0%); }
+  70% { transform: translate(0%, 15%); }
+  80% { transform: translate(3%, 35%); }
+  90% { transform: translate(-10%, 10%); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+/* ── Film Grain Overlay ───────────────────────────────────── */
+.grain-overlay::after {
+  content: "";
+  position: absolute;
+  inset: -100%;
+  width: 300%;
+  height: 300%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  animation: grain 8s steps(10) infinite;
+}
+
+/* ── Selection ────────────────────────────────────────────── */
+::selection {
+  background-color: rgba(184, 134, 11, 0.3);
+  color: var(--color-text-primary);
+}

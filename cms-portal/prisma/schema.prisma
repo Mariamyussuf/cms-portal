@@ -1,0 +1,310 @@
+// College of Management Sciences — site & payment portal
+// Prisma schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ────────────────────────────────────────────────────────────
+// Auth / identity
+// ────────────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  passwordHash  String
+  role          String    @default("STUDENT") // STUDENT | DEPT_ADMIN | BURSAR | SUPER_ADMIN
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  student Student?
+  staff   Staff?
+
+  auditLogs AuditLog[]
+}
+
+// A student's academic identity, separate from login credentials
+model Student {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  matricNumber  String   @unique
+  firstName     String
+  lastName      String
+  middleName    String?
+  level         String   // ND1, ND2, HND1, HND2, L100-L400, PG
+  departmentId  String
+  department    Department @relation(fields: [departmentId], references: [id])
+  admissionYear Int
+  phone         String?
+  avatarUrl     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  payments           Payment[]
+  associationMembers AssociationMember[]
+}
+
+// Staff profile — used for public "our people" pages and dept-admin scoping
+model Staff {
+  id           String      @id @default(cuid())
+  userId       String?     @unique
+  user         User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  firstName    String
+  lastName     String
+  title        String // e.g. "Senior Lecturer", "Head of Department"
+  bio          String?
+  photoUrl     String?
+  email        String?
+  departmentId String?
+  department   Department? @relation(fields: [departmentId], references: [id])
+  isHOD        Boolean     @default(false)
+  order        Int         @default(0) // display order on staff listing
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+// ────────────────────────────────────────────────────────────
+// Academic structure
+// ────────────────────────────────────────────────────────────
+
+model Department {
+  id          String   @id @default(cuid())
+  name        String   @unique // e.g. "Accounting", "Business Administration"
+  slug        String   @unique
+  summary     String
+  description String?
+  heroImage   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  students      Student[]
+  staff         Staff[]
+  feeStructures FeeStructure[]
+}
+
+// ────────────────────────────────────────────────────────────
+// Content: blog/news posts
+// ────────────────────────────────────────────────────────────
+
+model Post {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String
+  body        String
+  coverImage  String?
+  category    String   @default("General") // Academic, Social, Career, General
+  status      String   @default("DRAFT") // DRAFT | PUBLISHED
+  publishedAt DateTime?
+  authorName  String?
+  associationId String?
+  association   Association? @relation(fields: [associationId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ────────────────────────────────────────────────────────────
+// Associations under the college — BASA, NESA, MATSA
+// ────────────────────────────────────────────────────────────
+
+model Association {
+  id          String   @id @default(cuid())
+  name        String   @unique // e.g. "BASA", "NESA", "MATSA"
+  fullName    String   // Full association name
+  slug        String   @unique
+  tagline     String?
+  description String
+  logoUrl     String?
+  bannerUrl   String?
+  colorHex    String? // lets each association tint its own mini-page
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  leaders    AssociationLeader[]
+  events     AssociationEvent[]
+  duesConfig AssociationDues[]
+  members    AssociationMember[]
+  posts      Post[]
+  resources  Resource[]
+}
+
+model AssociationLeader {
+  id            String      @id @default(cuid())
+  associationId String
+  association   Association @relation(fields: [associationId], references: [id], onDelete: Cascade)
+  name          String
+  position      String // e.g. "President", "Financial Secretary"
+  photoUrl      String?
+  socialLinks   String? // JSON string of social links
+  order         Int         @default(0)
+  createdAt     DateTime    @default(now())
+}
+
+model AssociationEvent {
+  id            String      @id @default(cuid())
+  associationId String?
+  association   Association? @relation(fields: [associationId], references: [id], onDelete: Cascade)
+  title         String
+  description   String
+  location      String?
+  startsAt      DateTime
+  endsAt        DateTime?
+  coverImage    String?
+  status        String      @default("upcoming") // upcoming | ongoing | past
+  createdAt     DateTime    @default(now())
+
+  registrations EventRegistration[]
+}
+
+model EventRegistration {
+  id         String           @id @default(cuid())
+  eventId    String
+  event      AssociationEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  fullName   String
+  email      String
+  matricNumber String?
+  level      String?
+  department String?
+  association String?
+  createdAt  DateTime         @default(now())
+}
+
+// What an association charges — separate from college fees
+model AssociationDues {
+  id            String      @id @default(cuid())
+  associationId String
+  association   Association @relation(fields: [associationId], references: [id], onDelete: Cascade)
+  label         String // e.g. "2026/2027 Dues"
+  amountKobo    Int // stored in kobo to avoid float issues
+  session       String // e.g. "2026/2027"
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+
+  payments Payment[]
+}
+
+model AssociationMember {
+  id            String      @id @default(cuid())
+  associationId String
+  association   Association @relation(fields: [associationId], references: [id], onDelete: Cascade)
+  studentId     String
+  student       Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  joinedAt      DateTime    @default(now())
+
+  @@unique([associationId, studentId])
+}
+
+// ────────────────────────────────────────────────────────────
+// Resources — past questions, study materials
+// ────────────────────────────────────────────────────────────
+
+model Resource {
+  id            String       @id @default(cuid())
+  title         String
+  courseCode    String
+  departmentName String
+  level         String       // 100, 200, 300, 400
+  semester      String       // First, Second
+  year          String       // e.g. "2024/2025"
+  fileUrl       String
+  fileSize      Int          @default(0) // bytes
+  associationId String?
+  association   Association? @relation(fields: [associationId], references: [id])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+// ────────────────────────────────────────────────────────────
+// Fees & payments
+// ────────────────────────────────────────────────────────────
+
+// A fee the college (COLMANS) charges for a given level + session
+model FeeStructure {
+  id           String      @id @default(cuid())
+  departmentId String?
+  department   Department? @relation(fields: [departmentId], references: [id])
+  label        String // e.g. "COLMANS College Due"
+  category     String // COLLEGE_DUE | ASSOCIATION_DUE | TUITION | OTHER
+  level        String?
+  amountKobo   Int
+  session      String // e.g. "2026/2027"
+  isActive     Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  payments Payment[]
+}
+
+// A single payment record
+model Payment {
+  id                 String   @id @default(cuid())
+  reference          String   @unique // our own generated reference
+  providerReference  String? // ID/session the gateway gives back
+  provider           String   @default("PAYSTACK") // PAYSTACK | FLUTTERWAVE | BACHS
+  studentId          String
+  student            Student  @relation(fields: [studentId], references: [id])
+  feeStructureId     String?
+  feeStructure       FeeStructure? @relation(fields: [feeStructureId], references: [id])
+  associationDuesId  String?
+  associationDues    AssociationDues? @relation(fields: [associationDuesId], references: [id])
+  amountKobo         Int
+  currency           String   @default("NGN")
+  status             String   @default("PENDING") // PENDING | SUCCESSFUL | FAILED | ABANDONED
+  feeType            String?  // COLLEGE_DUE | ASSOCIATION_DUE
+  checkoutUrl        String?
+  paidAt             DateTime?
+  rawWebhookPayload  String? // JSON string of webhook payload
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  receipt Receipt?
+}
+
+model Receipt {
+  id         String   @id @default(cuid())
+  paymentId  String   @unique
+  payment    Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  receiptNo  String   @unique
+  issuedAt   DateTime @default(now())
+  pdfUrl     String?
+}
+
+// ────────────────────────────────────────────────────────────
+// Contact & Newsletter
+// ────────────────────────────────────────────────────────────
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+// ────────────────────────────────────────────────────────────
+// Audit trail — anyone touching money or fee config leaves a trace
+// ────────────────────────────────────────────────────────────
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  action    String // e.g. "fee_structure.create", "payment.refund"
+  targetId  String?
+  metadata  String? // JSON string
+  createdAt DateTime @default(now())
+}
