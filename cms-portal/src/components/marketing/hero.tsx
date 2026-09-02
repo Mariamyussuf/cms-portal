@@ -1,159 +1,31 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Sparkles,
+  BookOpen,
+  Calendar,
+  Users,
+  GraduationCap,
+  Award,
+  CheckCircle2,
+  FileText,
+  ShieldCheck,
+  Download,
+  TrendingUp,
+  Clock,
+  Compass,
+  QrCode,
+} from "lucide-react";
 
 /* ──────────────────────────────────────────────────
-   Particle Canvas Background
+   Animated Counter Hook
    ────────────────────────────────────────────────── */
 
-function ParticleCanvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mouseRef = useRef({ x: 0.5, y: 0.5 });
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    const dpr = window.devicePixelRatio || 1;
-
-    const resize = () => {
-      canvas.width = canvas.offsetWidth * dpr;
-      canvas.height = canvas.offsetHeight * dpr;
-      ctx.scale(dpr, dpr);
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    // Particle types with association colors
-    const colors = [
-      "rgba(201, 162, 75, 0.5)",   // Gold — Finance
-      "rgba(59, 130, 246, 0.4)",    // Blue — Economics
-      "rgba(16, 185, 129, 0.4)",    // Teal — Marketing
-      "rgba(139, 92, 246, 0.35)",   // Violet — HR
-      "rgba(240, 237, 230, 0.2)",   // White — Management
-    ];
-
-    type Particle = {
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      size: number;
-      color: string;
-      life: number;
-      maxLife: number;
-    };
-
-    const particles: Particle[] = [];
-    const maxParticles = 60;
-
-    const spawnParticle = () => {
-      if (particles.length >= maxParticles) return;
-      const w = canvas.offsetWidth;
-      const h = canvas.offsetHeight;
-      particles.push({
-        x: Math.random() * w,
-        y: h + 10,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: -(0.3 + Math.random() * 0.6),
-        size: 1.5 + Math.random() * 2.5,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        life: 0,
-        maxLife: 200 + Math.random() * 300,
-      });
-    };
-
-    const animate = () => {
-      const w = canvas.offsetWidth;
-      const h = canvas.offsetHeight;
-      ctx.clearRect(0, 0, w, h);
-
-      // Spawn new particles
-      if (Math.random() < 0.3) spawnParticle();
-
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.life++;
-        const progress = p.life / p.maxLife;
-
-        // Mouse influence
-        const dx = mouseRef.current.x * w - p.x;
-        const dy = mouseRef.current.y * h - p.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 200) {
-          p.vx += (dx / dist) * 0.02;
-          p.vy += (dy / dist) * 0.02;
-        }
-
-        p.x += p.vx;
-        p.y += p.vy;
-
-        // Fade based on life
-        const alpha = progress < 0.1
-          ? progress / 0.1
-          : progress > 0.8
-            ? 1 - (progress - 0.8) / 0.2
-            : 1;
-
-        if (p.life >= p.maxLife || p.y < -10) {
-          particles.splice(i, 1);
-          continue;
-        }
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = alpha * 0.8;
-        ctx.fill();
-
-        // Glow
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * 3 * alpha, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = alpha * 0.1;
-        ctx.fill();
-      }
-
-      ctx.globalAlpha = 1;
-      animId = requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    const handleMouse = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      mouseRef.current.x = (e.clientX - rect.left) / rect.width;
-      mouseRef.current.y = (e.clientY - rect.top) / rect.height;
-    };
-    canvas.addEventListener("mousemove", handleMouse);
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
-      canvas.removeEventListener("mousemove", handleMouse);
-    };
-  }, []);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full"
-      style={{ pointerEvents: "auto" }}
-    />
-  );
-}
-
-/* ──────────────────────────────────────────────────
-   Animated Counter
-   ────────────────────────────────────────────────── */
-
-function useCountUp(target: number, durationMs = 1400) {
+function useCountUp(target: number, durationMs = 1500) {
   const [value, setValue] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
   const started = useRef(false);
@@ -176,7 +48,7 @@ function useCountUp(target: number, durationMs = 1400) {
           requestAnimationFrame(step);
         }
       },
-      { threshold: 0.5 },
+      { threshold: 0.3 }
     );
 
     observer.observe(el);
@@ -187,101 +59,332 @@ function useCountUp(target: number, durationMs = 1400) {
 }
 
 /* ──────────────────────────────────────────────────
-   Hero Component
+   Collegiate Portal Executive Dashboard Preview
    ────────────────────────────────────────────────── */
 
-const stats = [
-  { label: "Active Members", value: 500, suffix: "+" },
-  { label: "Associations", value: 3, suffix: "" },
-  { label: "Events Yearly", value: 20, suffix: "+" },
-  { label: "Graduates Placed", value: 50, suffix: "+" },
+function CollegiatePortalShowcase() {
+  return (
+    <div className="relative w-full max-w-lg mx-auto">
+      {/* Ambient background glow */}
+      <div className="absolute -inset-4 bg-gradient-to-tr from-blue-900/15 via-blue-700/10 to-amber-500/10 rounded-3xl blur-2xl opacity-80 pointer-events-none" />
+
+      {/* Main Glass Stack Container */}
+      <div className="relative space-y-4">
+        {/* Card 1: Official Student Executive Identity Pass */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="rounded-2xl bg-gradient-to-br from-[#0A192F] via-[#0C2340] to-[#06101E] border border-blue-400/30 p-6 text-white shadow-xl shadow-slate-950/20 relative overflow-hidden"
+        >
+          {/* Subtle gold sheen */}
+          <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-[#DDB771]/15 to-transparent rounded-full blur-xl pointer-events-none" />
+
+          {/* Card Top */}
+          <div className="flex items-center justify-between pb-4 border-b border-white/15">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-white text-[#0A192F] flex items-center justify-center font-extrabold shadow-md">
+                <GraduationCap size={20} />
+              </div>
+              <div>
+                <p className="font-display text-base font-extrabold tracking-tight text-white leading-none">
+                  COLMANS
+                </p>
+                <p className="text-[10px] font-mono text-blue-200 uppercase tracking-wider mt-1">
+                  COLLEGE OF MANAGEMENT SCIENCES
+                </p>
+              </div>
+            </div>
+
+            <span className="px-2.5 py-1 rounded-md text-[10px] font-mono font-bold bg-[#DDB771]/20 text-[#DDB771] border border-[#DDB771]/40">
+              OFFICIAL PASS
+            </span>
+          </div>
+
+          {/* Card Middle: Scholar Identity */}
+          <div className="py-4 flex items-center justify-between gap-4">
+            <div className="space-y-1">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#DDB771]">
+                Academic Scholar
+              </span>
+              <p className="font-display text-lg font-bold text-white">
+                EXECUTIVE SCHOLAR
+              </p>
+              <p className="text-xs font-mono text-slate-300">
+                MATRIC: BU/20A/0842 &bull; LEVEL 400
+              </p>
+            </div>
+
+            <div className="text-right space-y-1">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400">
+                Department
+              </span>
+              <p className="text-xs font-bold text-blue-200">
+                BUSINESS ADMIN
+              </p>
+              <span className="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-400 font-bold">
+                <CheckCircle2 size={12} />
+                CLEARED
+              </span>
+            </div>
+          </div>
+
+          {/* Card Bottom: Barcode & Key */}
+          <div className="pt-3 border-t border-white/15 flex items-center justify-between text-xs text-slate-400">
+            <div className="flex items-center gap-2 font-mono text-[11px] text-blue-200">
+              <ShieldCheck size={14} className="text-[#DDB771]" />
+              <span>SESSION 2026/2027</span>
+            </div>
+            <QrCode size={24} className="text-white opacity-80" />
+          </div>
+        </motion.div>
+
+        {/* Card 2 & 3: Floating Micro Widgets (Exam Papers & Symposium Ticker) */}
+        <div className="grid sm:grid-cols-2 gap-3">
+          {/* Widget 1: Past Exam Archive Quick Link */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="rounded-2xl bg-white border border-slate-200 p-4 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="p-2 rounded-lg bg-blue-50 text-[#0C2340]">
+                <FileText size={16} />
+              </span>
+              <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                100L–400L
+              </span>
+            </div>
+            <div>
+              <p className="font-display text-xs font-bold text-[#0A192F]">
+                Exam Question Vault
+              </p>
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                Past papers with solutions
+              </p>
+            </div>
+            <Link
+              href="/resources"
+              className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-[#0C2340] hover:text-[#1D4ED8]"
+            >
+              <span>Browse Papers</span>
+              <ArrowRight size={12} />
+            </Link>
+          </motion.div>
+
+          {/* Widget 2: Upcoming Symposia */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+            className="rounded-2xl bg-white border border-slate-200 p-4 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="p-2 rounded-lg bg-emerald-50 text-emerald-700">
+                <Calendar size={16} />
+              </span>
+              <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                UPCOMING
+              </span>
+            </div>
+            <div>
+              <p className="font-display text-xs font-bold text-[#0A192F] line-clamp-1">
+                Annual Policy Colloquium
+              </p>
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                Deanery Auditorium &bull; Sept 15
+              </p>
+            </div>
+            <Link
+              href="/events"
+              className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-[#0C2340] hover:text-[#1D4ED8]"
+            >
+              <span>Reserve Seat</span>
+              <ArrowRight size={12} />
+            </Link>
+          </motion.div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ──────────────────────────────────────────────────
+   Main Hero Component
+   ────────────────────────────────────────────────── */
+
+const collegiateMetrics = [
+  {
+    label: "Matriculated Scholars",
+    value: 500,
+    suffix: "+",
+    caption: "Across Business, Economics & Marketing",
+  },
+  {
+    label: "Departmental Bodies",
+    value: 3,
+    suffix: "",
+    caption: "BASA, NESA, and MATSA Councils",
+  },
+  {
+    label: "Annual Conferences & Symposia",
+    value: 20,
+    suffix: "+",
+    caption: "Academic summits, case challenges & debates",
+  },
+  {
+    label: "Corporate & Alumni Placement",
+    value: 50,
+    suffix: "+",
+    caption: "Industry fellows & corporate alumni network",
+  },
 ];
 
 export function Hero() {
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-      {/* Background Layers */}
-      <div className="absolute inset-0 mesh-gradient" />
-      <div className="absolute inset-0 grain-overlay" />
-      <ParticleCanvas />
+    <section className="relative min-h-[88vh] flex flex-col justify-between overflow-hidden pt-8 pb-16 bg-[#F8FAFC]">
+      {/* Subtle Architectural Grid & Atmosphere */}
+      <div className="absolute inset-0 architectural-grid opacity-60 pointer-events-none" />
+      <div className="absolute inset-0 mesh-gradient pointer-events-none" />
 
-      {/* Floating Decorative Elements */}
-      <div className="absolute top-20 right-[15%] w-64 h-64 rounded-full bg-gold-500/5 blur-3xl animate-float" />
-      <div className="absolute bottom-20 left-[10%] w-48 h-48 rounded-full bg-blue-500/5 blur-3xl animate-float" style={{ animationDelay: "2s" }} />
-      <div className="absolute top-[40%] left-[60%] w-32 h-32 rounded-full bg-matsa/5 blur-3xl animate-float" style={{ animationDelay: "4s" }} />
+      {/* Ambient Flare */}
+      <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[75vw] h-[450px] rounded-full bg-gradient-to-b from-blue-900/10 via-blue-700/5 to-transparent blur-[140px] pointer-events-none" />
 
-      {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-20 sm:py-28 w-full">
-        <div className="max-w-3xl">
-          {/* Chip */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-gold-500/10 text-gold-400 border border-gold-500/20">
-              <Sparkles size={12} />
-              2026/2027 Academic Session
-            </span>
-          </motion.div>
-
-          {/* Heading */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.15 }}
-            className="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight"
-          >
-            Shaping Future{" "}
-            <span className="gradient-gold-text">Leaders</span>{" "}
-            in Management Sciences
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="mt-6 text-lg sm:text-xl text-text-secondary leading-relaxed max-w-[56ch]"
-          >
-            The College of Management Sciences brings together Business
-            Administration, Economics, Marketing, Accounting & Taxation
-            students under one roof — united by ambition, driven by
-            excellence.
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.45 }}
-            className="mt-8 flex flex-wrap items-center gap-4"
-          >
-            <Link
-              href="/about"
-              className="inline-flex items-center gap-2 px-6 py-3.5 text-sm font-medium rounded-lg bg-gradient-to-r from-gold-500 to-gold-600 text-bg-primary hover:from-gold-400 hover:to-gold-500 shadow-lg shadow-gold-500/20 hover:shadow-gold-500/35 transition-all duration-300"
+      {/* Main Hero Content */}
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 w-full my-auto py-8 lg:py-12">
+        <div className="grid gap-12 lg:grid-cols-12 items-center">
+          {/* Left Column: Clean & Prestigious Narrative */}
+          <div className="lg:col-span-6 space-y-6">
+            {/* Academic Eyebrow */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#0C2340]/10 border border-[#0C2340]/20 shadow-xs"
             >
-              Explore COLMANS
-              <ArrowRight size={16} />
-            </Link>
-            <Link
-              href="/payments"
-              className="inline-flex items-center gap-2 px-6 py-3.5 text-sm font-medium rounded-lg text-text-primary border border-border hover:border-gold-500/30 hover:bg-gold-500/5 transition-all duration-300"
+              <span className="w-2 h-2 rounded-full bg-[#0C2340] animate-pulse" />
+              <span className="text-xs font-mono font-bold tracking-wider text-[#0A192F]">
+                COLLEGE OF MANAGEMENT SCIENCES
+              </span>
+              <span className="text-blue-900 font-bold">&bull;</span>
+              <span className="text-xs font-mono text-[#0C2340] font-semibold">
+                APEX PORTAL
+              </span>
+            </motion.div>
+
+            {/* Clear, Beautiful Editorial Headline */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.15 }}
+              className="space-y-2"
             >
-              Pay Your Dues
-            </Link>
+              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#0A192F] leading-[1.12]">
+                Empowering the Next Generation of{" "}
+                <span className="gradient-oxford-text text-glow-oxford">
+                  Executive Leaders.
+                </span>
+              </h1>
+            </motion.div>
+
+            {/* Mission Narrative */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="text-base text-slate-600 leading-relaxed max-w-[50ch]"
+            >
+              The unified collegiate authority coordinating{" "}
+              <strong className="text-[#0A192F]">BASA</strong> (Business Administration),{" "}
+              <strong className="text-[#0A192F]">NESA</strong> (Economics), and{" "}
+              <strong className="text-[#0A192F]">MATSA</strong> (Marketing, Accounting &amp; Taxation).
+              Pioneering academic excellence, executive leadership, and corporate mentorship.
+            </motion.p>
+
+            {/* Action Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.45 }}
+              className="space-y-4 pt-2"
+            >
+              <div className="flex flex-wrap sm:flex-nowrap items-center gap-3">
+                <Link href="/about" className="w-full sm:w-auto">
+                  <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 text-xs font-bold rounded-xl bg-[#0C2340] hover:bg-[#0A192F] text-white shadow-md shadow-slate-900/15 hover:shadow-lg transition-all cursor-pointer">
+                    <Compass size={15} />
+                    <span>Explore College</span>
+                    <ArrowRight size={14} />
+                  </button>
+                </Link>
+
+                <Link href="/resources" className="w-full sm:w-auto">
+                  <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 text-xs font-semibold rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-800 shadow-xs transition-all cursor-pointer">
+                    <FileText size={15} className="text-[#0C2340]" />
+                    <span>Past Exam Papers</span>
+                  </button>
+                </Link>
+
+                <Link href="/events" className="w-full sm:w-auto">
+                  <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 text-xs font-semibold rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-800 shadow-xs transition-all cursor-pointer">
+                    <Calendar size={15} className="text-[#0C2340]" />
+                    <span>Symposia</span>
+                  </button>
+                </Link>
+              </div>
+
+              {/* Quick utility pill links */}
+              <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 pt-1">
+                <Link
+                  href="/executives"
+                  className="inline-flex items-center gap-1.5 hover:text-[#0C2340] font-medium"
+                >
+                  <Users size={13} className="text-[#0C2340]" />
+                  Executive Council
+                </Link>
+                <span>&bull;</span>
+                <Link
+                  href="/portal"
+                  className="inline-flex items-center gap-1.5 hover:text-[#0C2340] font-medium"
+                >
+                  <GraduationCap size={13} className="text-[#0C2340]" />
+                  Digital ID Portal
+                </Link>
+                <span>&bull;</span>
+                <Link
+                  href="/payments"
+                  className="inline-flex items-center gap-1.5 hover:text-[#0C2340] font-medium"
+                >
+                  <ShieldCheck size={13} className="text-emerald-700" />
+                  Dues Clearance
+                </Link>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right Column: Clean Collegiate Portal Showcase */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="lg:col-span-6 flex justify-center w-full"
+          >
+            <CollegiatePortalShowcase />
           </motion.div>
         </div>
+      </div>
 
-        {/* Stats Strip */}
+      {/* Bottom Collegiate Metrics Strip */}
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 w-full pt-8">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-16 sm:mt-20 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-10 pt-10 border-t border-border"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 pt-8 border-t border-slate-200"
         >
-          {stats.map((stat) => (
-            <StatItem key={stat.label} {...stat} />
+          {collegiateMetrics.map((stat, i) => (
+            <MetricBlock key={stat.label} {...stat} index={i} />
           ))}
         </motion.div>
       </div>
@@ -289,23 +392,40 @@ export function Hero() {
   );
 }
 
-function StatItem({
+function MetricBlock({
   label,
   value,
   suffix,
+  caption,
+  index,
 }: {
   label: string;
   value: number;
   suffix: string;
+  caption: string;
+  index: number;
 }) {
   const { value: animated, ref } = useCountUp(value);
   return (
-    <div>
-      <dd className="tabular font-display text-3xl sm:text-4xl font-bold text-text-primary">
-        <span ref={ref}>{animated.toLocaleString()}</span>
-        <span className="text-gold-400">{suffix}</span>
-      </dd>
-      <dt className="mt-1.5 text-sm text-text-secondary">{label}</dt>
+    <div className="space-y-1">
+      <div className="flex items-baseline gap-1">
+        <span
+          ref={ref}
+          className="tabular font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0A192F] tracking-tight"
+        >
+          {animated.toLocaleString()}
+        </span>
+        <span className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#B89758]">
+          {suffix}
+        </span>
+      </div>
+
+      <p className="text-xs sm:text-sm font-bold text-[#0A192F] mt-1">
+        {label}
+      </p>
+      <p className="text-[11px] text-slate-500 line-clamp-1">
+        {caption}
+      </p>
     </div>
   );
 }

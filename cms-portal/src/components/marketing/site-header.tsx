@@ -8,8 +8,9 @@ import {
   Menu,
   X,
   GraduationCap,
-  CreditCard,
   ChevronRight,
+  Sparkles,
+  BookOpen,
 } from "lucide-react";
 
 const navLinks = [
@@ -20,6 +21,7 @@ const navLinks = [
   { href: "/blog", label: "Blog" },
   { href: "/resources", label: "Resources" },
   { href: "/contact", label: "Contact" },
+  { href: "/payments", label: "Dues" },
 ];
 
 export function SiteHeader() {
@@ -49,21 +51,22 @@ export function SiteHeader() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-gradient-to-r from-gold-700 via-gold-600 to-gold-700 text-bg-primary overflow-hidden relative z-50"
+            className="bg-[#0A192F] text-slate-200 overflow-hidden relative z-50 shadow-xs border-b border-[#0F2E54]"
           >
             <div className="mx-auto max-w-7xl px-4 py-2 flex items-center justify-center gap-3 text-xs sm:text-sm">
-              <span className="font-medium">
-                📢 2026/2027 Dues Payment Portal is now open!
+              <span className="inline-flex items-center gap-1.5 font-medium">
+                <Sparkles size={13} className="text-[#C5A880]" />
+                Welcome to the 2026/2027 Academic Session &bull; Discover upcoming events &amp; past question archives
               </span>
               <Link
-                href="/payments"
-                className="underline underline-offset-2 hover:no-underline font-semibold"
+                href="/resources"
+                className="underline underline-offset-4 hover:text-[#C5A880] font-bold text-white transition-colors"
               >
-                Pay Now →
+                Access Resources &rarr;
               </Link>
               <button
                 onClick={() => setShowAnnouncement(false)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gold-700/50 rounded cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-white rounded cursor-pointer"
                 aria-label="Dismiss announcement"
               >
                 <X size={14} />
@@ -77,29 +80,29 @@ export function SiteHeader() {
       <header
         className={`sticky top-0 z-40 transition-all duration-300 ${
           isScrolled
-            ? "bg-bg-primary/80 backdrop-blur-xl border-b border-border shadow-lg shadow-black/10"
-            : "bg-transparent"
+            ? "bg-white/90 backdrop-blur-2xl border-b border-slate-200 shadow-sm"
+            : "bg-white/65 backdrop-blur-md border-b border-slate-200/60"
         }`}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="flex items-center justify-between h-16 sm:h-18">
+          <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center shadow-lg shadow-gold-500/20">
-                <GraduationCap size={18} className="text-bg-primary" />
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="w-10 h-10 rounded-xl bg-[#0C2340] text-white flex items-center justify-center shadow-md shadow-slate-900/20 group-hover:scale-105 transition-transform duration-300">
+                <GraduationCap size={20} className="text-white" />
               </div>
               <div className="flex flex-col">
-                <span className="font-display text-sm font-bold tracking-tight text-text-primary group-hover:text-gold-400 transition-colors">
+                <span className="font-display text-base font-extrabold tracking-tight text-[#0A192F] group-hover:text-[#1D4ED8] transition-colors">
                   COLMANS
                 </span>
-                <span className="text-[10px] text-text-muted leading-none hidden sm:block">
-                  College of Management Sciences
+                <span className="text-[10px] text-slate-500 font-mono leading-none tracking-wider hidden sm:block">
+                  COLLEGE OF MANAGEMENT SCIENCES
                 </span>
               </div>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-1">
+            <nav className="hidden lg:flex items-center gap-1 bg-slate-100/90 border border-slate-200 rounded-full px-3.5 py-1.5 backdrop-blur-md">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
@@ -107,22 +110,15 @@ export function SiteHeader() {
                     key={link.href}
                     href={link.href}
                     className={`
-                      relative px-3 py-2 text-sm rounded-lg transition-all duration-200
+                      relative px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all duration-200
                       ${
                         isActive
-                          ? "text-gold-400"
-                          : "text-text-secondary hover:text-text-primary hover:bg-bg-tertiary/50"
+                          ? "text-white bg-[#0C2340] shadow-sm"
+                          : "text-slate-600 hover:text-[#0A192F] hover:bg-white"
                       }
                     `}
                   >
                     {link.label}
-                    {isActive && (
-                      <motion.span
-                        layoutId="nav-indicator"
-                        className="absolute bottom-0 left-3 right-3 h-0.5 bg-gold-500 rounded-full"
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
-                      />
-                    )}
                   </Link>
                 );
               })}
@@ -131,15 +127,16 @@ export function SiteHeader() {
             {/* Right Actions */}
             <div className="flex items-center gap-2 sm:gap-3">
               <Link
-                href="/payments"
-                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg bg-gradient-to-r from-gold-500 to-gold-600 text-bg-primary hover:from-gold-400 hover:to-gold-500 shadow-lg shadow-gold-500/20 hover:shadow-gold-500/30 transition-all duration-300"
+                href="/portal"
+                className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold rounded-xl bg-[#0C2340] hover:bg-[#0A192F] text-white shadow-md shadow-slate-900/15 hover:shadow-lg transition-all duration-200"
               >
-                <CreditCard size={14} />
-                Pay Dues
+                <GraduationCap size={14} />
+                Student Portal
               </Link>
+
               <Link
                 href="/login"
-                className="hidden sm:inline-flex px-4 py-2 text-sm text-text-secondary hover:text-text-primary border border-border hover:border-border-hover rounded-lg transition-all duration-200"
+                className="hidden sm:inline-flex px-4 py-2.5 text-xs font-semibold text-slate-700 hover:text-[#0A192F] border border-slate-200 hover:border-slate-300 rounded-xl bg-white hover:bg-slate-50 transition-all duration-200 shadow-2xs"
               >
                 Sign In
               </Link>
@@ -147,10 +144,10 @@ export function SiteHeader() {
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMobileOpen(!isMobileOpen)}
-                className="lg:hidden p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-colors cursor-pointer"
+                className="lg:hidden p-2 rounded-xl text-slate-700 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer"
                 aria-label={isMobileOpen ? "Close menu" : "Open menu"}
               >
-                {isMobileOpen ? <X size={22} /> : <Menu size={22} />}
+                {isMobileOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
             </div>
           </div>
@@ -161,32 +158,35 @@ export function SiteHeader() {
       <AnimatePresence>
         {isMobileOpen && (
           <>
-            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
+              className="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm lg:hidden"
               onClick={() => setIsMobileOpen(false)}
             />
 
-            {/* Drawer */}
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed top-0 right-0 z-30 h-full w-80 max-w-[85vw] bg-bg-secondary border-l border-border p-6 lg:hidden overflow-y-auto"
+              className="fixed top-0 right-0 z-50 h-full w-80 max-w-[85vw] bg-white border-l border-slate-200 p-6 lg:hidden overflow-y-auto shadow-2xl"
             >
-              <div className="flex items-center justify-between mb-8">
-                <span className="font-display text-lg font-bold text-gold-400">
-                  Menu
-                </span>
+              <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-[#0C2340] flex items-center justify-center">
+                    <GraduationCap size={16} className="text-white" />
+                  </div>
+                  <span className="font-display text-base font-bold text-[#0A192F]">
+                    COLMANS
+                  </span>
+                </div>
                 <button
                   onClick={() => setIsMobileOpen(false)}
-                  className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-tertiary cursor-pointer"
+                  className="p-2 rounded-lg text-slate-400 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
                 >
-                  <X size={20} />
+                  <X size={18} />
                 </button>
               </div>
 
@@ -198,56 +198,35 @@ export function SiteHeader() {
                       key={link.href}
                       href={link.href}
                       className={`
-                        flex items-center justify-between px-4 py-3 rounded-lg text-sm transition-all duration-200
+                        flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all
                         ${
                           isActive
-                            ? "bg-gold-500/10 text-gold-400 border border-gold-500/20"
-                            : "text-text-secondary hover:text-text-primary hover:bg-bg-tertiary"
+                            ? "bg-[#0C2340] text-white font-semibold shadow-xs"
+                            : "text-slate-600 hover:text-[#0A192F] hover:bg-slate-100"
                         }
                       `}
                     >
                       {link.label}
-                      <ChevronRight size={14} className="text-text-muted" />
+                      <ChevronRight size={14} className={isActive ? "text-white" : "text-slate-400"} />
                     </Link>
                   );
                 })}
               </nav>
 
-              <div className="mt-8 space-y-3">
+              <div className="mt-8 space-y-3 pt-6 border-t border-slate-100">
                 <Link
-                  href="/payments"
-                  className="flex items-center justify-center gap-2 w-full px-4 py-3 text-sm font-medium rounded-lg bg-gradient-to-r from-gold-500 to-gold-600 text-bg-primary shadow-lg shadow-gold-500/20"
+                  href="/portal"
+                  className="flex items-center justify-center gap-2 w-full px-4 py-3.5 text-xs font-bold rounded-xl bg-[#0C2340] text-white shadow-md"
                 >
-                  <CreditCard size={16} />
-                  Pay Your Dues
+                  <GraduationCap size={15} />
+                  Student Digital ID Portal
                 </Link>
                 <Link
                   href="/login"
-                  className="flex items-center justify-center w-full px-4 py-3 text-sm text-text-secondary border border-border rounded-lg hover:border-border-hover"
+                  className="flex items-center justify-center w-full px-4 py-3 text-xs font-semibold text-slate-700 border border-slate-200 rounded-xl hover:bg-slate-50 bg-white"
                 >
-                  Sign In to Portal
+                  Sign In
                 </Link>
-              </div>
-
-              {/* Associations */}
-              <div className="mt-10 pt-6 border-t border-border">
-                <p className="text-xs text-text-muted uppercase tracking-wider mb-3">
-                  Associations
-                </p>
-                <div className="space-y-2">
-                  {[
-                    { name: "BASA", color: "text-basa" },
-                    { name: "NESA", color: "text-nesa" },
-                    { name: "MATSA", color: "text-matsa" },
-                  ].map((assoc) => (
-                    <span
-                      key={assoc.name}
-                      className={`block text-sm ${assoc.color}`}
-                    >
-                      {assoc.name}
-                    </span>
-                  ))}
-                </div>
               </div>
             </motion.div>
           </>

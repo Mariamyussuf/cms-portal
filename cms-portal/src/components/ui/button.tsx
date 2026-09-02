@@ -1,87 +1,66 @@
 "use client";
 
-import { forwardRef } from "react";
+import * as React from "react";
+import { Loader2 } from "lucide-react";
 
-type ButtonVariant = "primary" | "secondary" | "ghost" | "destructive" | "outline";
-type ButtonSize = "sm" | "md" | "lg";
-
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive";
+  size?: "sm" | "md" | "lg";
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
 }
 
-const variantClasses: Record<ButtonVariant, string> = {
-  primary:
-    "bg-gradient-to-r from-gold-500 to-gold-600 text-bg-primary hover:from-gold-400 hover:to-gold-500 shadow-[0_0_20px_rgba(184,134,11,0.2)] hover:shadow-[0_0_30px_rgba(184,134,11,0.35)]",
-  secondary:
-    "bg-bg-elevated text-text-primary border border-border hover:border-border-hover hover:bg-bg-tertiary",
-  ghost:
-    "bg-transparent text-text-secondary hover:text-text-primary hover:bg-bg-tertiary",
-  destructive:
-    "bg-error/10 text-error border border-error/20 hover:bg-error/20",
-  outline:
-    "bg-transparent text-gold-400 border border-gold-500/30 hover:border-gold-500 hover:bg-gold-500/5",
-};
-
-const sizeClasses: Record<ButtonSize, string> = {
-  sm: "px-3 py-1.5 text-xs rounded-md gap-1.5",
-  md: "px-5 py-2.5 text-sm rounded-lg gap-2",
-  lg: "px-7 py-3.5 text-base rounded-lg gap-2.5",
-};
-
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
+      className = "",
       variant = "primary",
       size = "md",
       isLoading = false,
       leftIcon,
       rightIcon,
-      className = "",
       disabled,
       children,
       ...props
     },
-    ref,
+    ref
   ) => {
+    // Base styles
+    const base =
+      "inline-flex items-center justify-center font-bold rounded-xl transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900/40 disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer";
+
+    // Variants — Oxford & Cambridge Deep Navy + Champagne Brass
+    const variants = {
+      primary:
+        "bg-[#0C2340] hover:bg-[#0A192F] text-white shadow-md shadow-slate-900/15 hover:shadow-lg active:scale-[0.98]",
+      secondary:
+        "bg-white text-slate-800 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-xs active:scale-[0.98]",
+      outline:
+        "bg-transparent text-[#0C2340] border border-slate-300 hover:border-[#0C2340] hover:bg-slate-100 active:scale-[0.98]",
+      ghost:
+        "bg-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:scale-[0.98]",
+      destructive:
+        "bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 active:scale-[0.98]",
+    };
+
+    // Sizes
+    const sizes = {
+      sm: "h-9 px-3.5 text-xs gap-1.5",
+      md: "h-11 px-5 text-sm gap-2",
+      lg: "h-13 px-7 text-base gap-2.5",
+    };
+
     return (
       <button
         ref={ref}
         disabled={disabled || isLoading}
-        className={`
-          inline-flex items-center justify-center font-medium
-          transition-all duration-300 ease-out
-          disabled:opacity-50 disabled:cursor-not-allowed
-          cursor-pointer
-          ${variantClasses[variant]}
-          ${sizeClasses[size]}
-          ${className}
-        `}
+        className={`${base} ${variants[variant]} ${sizes[size]} ${className}`}
         {...props}
       >
         {isLoading ? (
-          <svg
-            className="animate-spin h-4 w-4"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-            />
-          </svg>
+          <Loader2 className="animate-spin" size={size === "sm" ? 14 : 16} />
         ) : (
           leftIcon
         )}
@@ -89,7 +68,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {!isLoading && rightIcon}
       </button>
     );
-  },
+  }
 );
 
 Button.displayName = "Button";

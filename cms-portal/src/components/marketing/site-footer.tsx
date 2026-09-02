@@ -6,108 +6,143 @@ import {
   GraduationCap,
   Mail,
   MapPin,
-  Phone,
   ArrowRight,
+  Loader2,
+  CheckCircle2,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const quickLinks = [
-  { label: "About COLMANS", href: "/about" },
-  { label: "Events", href: "/events" },
-  { label: "Executives", href: "/executives" },
-  { label: "Blog & News", href: "/blog" },
-  { label: "Resources", href: "/resources" },
-  { label: "Contact Us", href: "/contact" },
+  { href: "/about", label: "About COLMANS" },
+  { href: "/events", label: "Events & Calendar" },
+  { href: "/executives", label: "Executive Council" },
+  { href: "/blog", label: "Gazette & News" },
+  { href: "/resources", label: "Past Exam Papers" },
+  { href: "/contact", label: "Helpdesk & FAQ" },
 ];
 
 const associations = [
-  { name: "BASA", full: "Business Administration Students' Association", color: "text-basa" },
-  { name: "NESA", full: "Nigerian Economics Students' Association", color: "text-nesa" },
-  { name: "MATSA", full: "Marketing, Accounting & Taxation Students' Association", color: "text-matsa" },
+  { name: "BASA", full: "Business Administration", href: "/about#basa" },
+  { name: "NESA", full: "Economics Students", href: "/about#nesa" },
+  { name: "MATSA", full: "Marketing, Accounting & Tax", href: "/about#matsa" },
+];
+
+const portalLinks = [
+  { href: "/payments", label: "Pay Collegiate Dues" },
+  { href: "/portal", label: "Student Digital ID" },
+  { href: "/login", label: "Student & Staff Login" },
+  { href: "/admin", label: "Admin Command Center" },
 ];
 
 export function SiteFooter() {
   const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
-  const handleSubscribe = async (e: React.FormEvent) => {
+  const handleNewsletter = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-    // TODO: connect to newsletter API
-    setSubscribed(true);
-    setEmail("");
-    setTimeout(() => setSubscribed(false), 3000);
+
+    setIsSubscribing(true);
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      if (res.ok) {
+        setIsSubscribed(true);
+        toast.success("Subscribed to COLMANS Dispatch!");
+      } else {
+        const data = await res.json();
+        toast.error(data.error || "Subscription failed.");
+      }
+    } catch {
+      toast.error("Network error. Please try again.");
+    } finally {
+      setIsSubscribing(false);
+    }
   };
 
   return (
-    <footer className="mt-auto border-t border-border bg-bg-secondary">
-      {/* Newsletter Section */}
-      <div className="border-b border-border">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-            <div>
-              <h3 className="font-display text-lg font-semibold text-text-primary">
-                Stay in the loop
-              </h3>
-              <p className="mt-1 text-sm text-text-secondary">
-                Get updates on events, news, and association activities.
-              </p>
-            </div>
-            <form onSubmit={handleSubscribe} className="flex w-full sm:w-auto gap-2">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                required
-                className="w-full sm:w-64 rounded-lg bg-bg-tertiary border border-border px-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-gold-500/50 focus:ring-1 focus:ring-gold-500/20"
-              />
-              <button
-                type="submit"
-                className="shrink-0 px-5 py-2.5 text-sm font-medium rounded-lg bg-gradient-to-r from-gold-500 to-gold-600 text-bg-primary hover:from-gold-400 hover:to-gold-500 transition-all duration-300 cursor-pointer"
-              >
-                {subscribed ? "Subscribed ✓" : "Subscribe"}
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Footer Content */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Brand */}
-          <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
-                <GraduationCap size={18} className="text-bg-primary" />
+    <footer className="border-t border-slate-200 bg-[#0A192F] text-slate-300">
+      {/* Main Footer Grid */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-20">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+          {/* Col 1: Brand & Newsletter */}
+          <div className="lg:col-span-2 space-y-6">
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="w-10 h-10 rounded-xl bg-white text-[#0A192F] flex items-center justify-center shadow-lg shadow-slate-950/40">
+                <GraduationCap size={20} className="text-[#0A192F]" />
               </div>
-              <span className="font-display text-lg font-bold text-text-primary">
-                COLMANS
-              </span>
+              <div className="flex flex-col">
+                <span className="font-display text-lg font-bold tracking-tight text-white">
+                  COLMANS
+                </span>
+                <span className="text-[10px] text-blue-200 font-mono leading-none tracking-wider">
+                  COLLEGE OF MANAGEMENT SCIENCES
+                </span>
+              </div>
             </Link>
-            <p className="mt-4 text-sm text-text-secondary leading-relaxed">
-              The College of Management Sciences — nurturing the next
-              generation of business leaders, economists, and management
-              professionals.
+
+            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-sm">
+              The official centralized association portal unifying Business
+              Administration (BASA), Economics (NESA), and Marketing, Accounting &amp;
+              Taxation (MATSA).
             </p>
+
+            {/* Newsletter */}
+            <div className="space-y-3 pt-2">
+              <p className="text-xs font-mono font-bold uppercase tracking-wider text-[#DDB771]">
+                COLMANS Weekly Dispatch
+              </p>
+              {isSubscribed ? (
+                <div className="flex items-center gap-2 text-xs text-emerald-400 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                  <CheckCircle2 size={15} />
+                  <span>You are subscribed to collegiate dispatches.</span>
+                </div>
+              ) : (
+                <form
+                  onSubmit={handleNewsletter}
+                  className="flex items-center gap-2 max-w-sm"
+                >
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="student@colmans.edu.ng"
+                    className="flex-1 px-3.5 py-2.5 rounded-xl bg-[#0C2340] border border-blue-900/60 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-[#DDB771]"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isSubscribing}
+                    className="px-4 py-2.5 rounded-xl bg-[#0F2E54] hover:bg-[#1E3A8A] text-white border border-blue-700/40 text-xs font-bold transition-colors cursor-pointer shadow-md disabled:opacity-50"
+                  >
+                    {isSubscribing ? (
+                      <Loader2 size={14} className="animate-spin" />
+                    ) : (
+                      "Join"
+                    )}
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-xs uppercase tracking-wider text-text-muted font-semibold mb-4">
+          {/* Col 2: Navigation */}
+          <div className="space-y-4">
+            <p className="text-xs font-mono font-bold uppercase tracking-widest text-[#DDB771]">
               Quick Links
-            </h4>
-            <ul className="space-y-2.5">
+            </p>
+            <ul className="space-y-2.5 text-xs">
               {quickLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="group flex items-center gap-1.5 text-sm text-text-secondary hover:text-gold-400 transition-colors"
+                    className="text-slate-400 hover:text-white transition-colors"
                   >
-                    <ArrowRight
-                      size={12}
-                      className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200"
-                    />
                     {link.label}
                   </Link>
                 </li>
@@ -115,63 +150,78 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* Associations */}
-          <div>
-            <h4 className="text-xs uppercase tracking-wider text-text-muted font-semibold mb-4">
+          {/* Col 3: Associations */}
+          <div className="space-y-4">
+            <p className="text-xs font-mono font-bold uppercase tracking-widest text-[#DDB771]">
               Associations
-            </h4>
-            <ul className="space-y-3">
+            </p>
+            <ul className="space-y-3 text-xs">
               {associations.map((assoc) => (
                 <li key={assoc.name}>
-                  <span className={`text-sm font-semibold ${assoc.color}`}>
-                    {assoc.name}
-                  </span>
-                  <p className="text-xs text-text-muted mt-0.5">
-                    {assoc.full}
-                  </p>
+                  <Link
+                    href={assoc.href}
+                    className="group block space-y-0.5 text-slate-400 hover:text-white transition-colors"
+                  >
+                    <span className="font-bold text-white group-hover:text-blue-300">
+                      {assoc.name}
+                    </span>
+                    <p className="text-[11px] text-slate-500">{assoc.full}</p>
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Contact */}
-          <div>
-            <h4 className="text-xs uppercase tracking-wider text-text-muted font-semibold mb-4">
-              Contact
-            </h4>
-            <ul className="space-y-3">
-              <li className="flex items-start gap-2.5 text-sm text-text-secondary">
-                <MapPin size={14} className="mt-0.5 shrink-0 text-text-muted" />
-                <span>College of Management Sciences, Bells University of Technology, Ota, Ogun State</span>
-              </li>
-              <li className="flex items-center gap-2.5 text-sm text-text-secondary">
-                <Mail size={14} className="shrink-0 text-text-muted" />
-                <a href="mailto:cms@bellsuniversity.edu.ng" className="hover:text-gold-400 transition-colors">
-                  cms@bellsuniversity.edu.ng
-                </a>
-              </li>
-              <li className="flex items-center gap-2.5 text-sm text-text-secondary">
-                <Phone size={14} className="shrink-0 text-text-muted" />
-                <span>+234 800 000 0000</span>
-              </li>
+          {/* Col 4: Portal & Contact */}
+          <div className="space-y-4">
+            <p className="text-xs font-mono font-bold uppercase tracking-widest text-[#DDB771]">
+              Portal Access
+            </p>
+            <ul className="space-y-2.5 text-xs">
+              {portalLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-slate-400 hover:text-white transition-colors flex items-center gap-1.5"
+                  >
+                    <span>{link.label}</span>
+                    <ArrowRight size={11} className="text-[#DDB771]" />
+                  </Link>
+                </li>
+              ))}
             </ul>
+
+            <div className="pt-4 border-t border-slate-800 space-y-2 text-[11px] text-slate-400">
+              <div className="flex items-center gap-2">
+                <MapPin size={12} className="text-[#DDB771]" />
+                <span>COLMANS Deanery Complex</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mail size={12} className="text-[#DDB771]" />
+                <span>deanery@colmans.edu.ng</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Copyright */}
-      <div className="border-t border-border">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-text-muted">
-            © {new Date().getFullYear()} College of Management Sciences, Bells University of Technology. All rights reserved.
+      {/* Bottom Legal Strip */}
+      <div className="border-t border-[#0F2E54] py-6 bg-[#06101E]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+          <p>
+            &copy; {new Date().getFullYear()} College of Management Sciences
+            (COLMANS). All rights reserved.
           </p>
-          <div className="flex items-center gap-4 text-xs text-text-muted">
-            <Link href="/contact" className="hover:text-text-secondary transition-colors">
-              Privacy
+          <div className="flex items-center gap-6 text-[11px]">
+            <Link href="/privacy" className="hover:text-slate-300">
+              Privacy Policy
             </Link>
-            <Link href="/contact" className="hover:text-text-secondary transition-colors">
-              Terms
+            <Link href="/terms" className="hover:text-slate-300">
+              Terms of Portal Use
             </Link>
+            <span className="text-emerald-400 font-mono">
+              System Status: 100% Operational
+            </span>
           </div>
         </div>
       </div>

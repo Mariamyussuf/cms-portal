@@ -36,7 +36,7 @@ export async function GET() {
     ]);
 
     const totalRevenueKobo = payments.reduce(
-      (sum, p) => sum + p.amountKobo,
+      (sum: number, p: { amountKobo: number }) => sum + p.amountKobo,
       0,
     );
 

@@ -1,102 +1,94 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Award, BookOpen, Lightbulb, Trophy } from "lucide-react";
+import { Award, Sparkles, Quote, GraduationCap } from "lucide-react";
 
-const showcases = [
+const spotlights = [
   {
-    icon: Trophy,
-    title: "National Business Plan Winner",
-    student: "Adebayo Oluwaseun",
-    association: "BASA",
-    description:
-      "Won first place at the National Business Plan Competition with an innovative fintech solution for SME lending.",
-    color: "text-basa",
-    bgColor: "bg-basa/10",
+    name: "Toluwani Adeleke",
+    role: "President, BASA (2025/2026)",
+    department: "Business Administration, 400L",
+    quote:
+      "Leading BASA taught me that collegiate leadership is about creating sustainable frameworks for those coming after us. COLMANS provides the central scaffolding that makes individual departments flourish.",
+    achievement: "National Business Case Competition Winner",
   },
   {
-    icon: BookOpen,
-    title: "Published Economic Research",
-    student: "Chinwe Okafor",
-    association: "NESA",
-    description:
-      "Published a peer-reviewed paper on 'Impact of Digital Currency on Nigerian Monetary Policy' in the West African Economic Journal.",
-    color: "text-nesa",
-    bgColor: "bg-nesa/10",
+    name: "Chukwudi Okafor",
+    role: "Economics Research Fellow",
+    department: "Economics, 300L",
+    quote:
+      "Through NESA and COLMANS symposiums, I published my first policy review on monetary policy dynamics in emerging markets. The collegiate network opens doors you didn't even know existed.",
+    achievement: "Central Bank of Nigeria Youth Policy Finalist",
   },
   {
-    icon: Lightbulb,
-    title: "Marketing Innovation Award",
-    student: "Fatima Abdullahi",
-    association: "MATSA",
-    description:
-      "Designed a viral social media campaign for a local brand that increased their engagement by 300% in 3 months.",
-    color: "text-matsa",
-    bgColor: "bg-matsa/10",
-  },
-  {
-    icon: Award,
-    title: "Best Graduating Student",
-    student: "Emmanuel Nwosu",
-    association: "BASA",
-    description:
-      "Graduated with a 4.85 CGPA and received the Dean's Excellence Award for outstanding academic performance.",
-    color: "text-gold-400",
-    bgColor: "bg-gold-500/10",
+    name: "Amina Bello",
+    role: "Tax & Marketing Lead",
+    department: "Marketing / Accounting, 400L",
+    quote:
+      "The synergy between accounting rigor and creative marketing in MATSA prepared me for my Big 4 internship. Paying dues through the new portal was seamless and gave me instant clearance.",
+    achievement: "KPMG Early Career Insight Fellow",
   },
 ];
 
 export function StudentShowcase() {
   return (
-    <section className="py-20 sm:py-28 border-b border-border">
+    <section className="py-24 sm:py-32 border-b border-slate-200 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center max-w-2xl mx-auto mb-14"
+          className="max-w-3xl mb-16"
         >
-          <span className="text-xs uppercase tracking-widest text-gold-400 font-semibold">
-            Achievements
+          <span className="text-xs font-mono uppercase tracking-widest text-[#0C2340] font-bold flex items-center gap-1.5">
+            <Sparkles size={12} className="text-[#B89758]" />
+            SCHOLAR VOICES
           </span>
-          <h2 className="mt-3 font-display text-3xl sm:text-4xl font-bold text-text-primary">
-            Student Spotlight
+          <h2 className="mt-3 font-display text-4xl sm:text-5xl font-extrabold tracking-tight text-[#0A192F]">
+            Excellence Across Disciplines.
           </h2>
-          <p className="mt-4 text-text-secondary leading-relaxed">
-            Celebrating the outstanding achievements of students across our three associations.
+          <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl">
+            Hear from exceptional student leaders and scholars navigating
+            career breakthroughs through the College of Management Sciences.
           </p>
         </motion.div>
 
-        {/* Showcase Grid */}
-        <div className="grid gap-6 sm:grid-cols-2">
-          {showcases.map((item, i) => (
+        <div className="grid gap-6 md:grid-cols-3">
+          {spotlights.map((student, i) => (
             <motion.div
-              key={item.title}
-              initial={{ opacity: 0, y: 30 }}
+              key={student.name}
+              initial={{ opacity: 0, y: 25 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="group rounded-xl p-6 bg-bg-card border border-border hover:border-border-hover transition-all duration-300 hover:shadow-[0_0_25px_rgba(184,134,11,0.08)]"
+              whileHover={{ y: -6 }}
+              className="relative rounded-2xl p-8 bg-stone-50/70 border border-slate-200 hover:border-slate-300 transition-all duration-300 flex flex-col justify-between shadow-xs hover:shadow-md"
             >
-              <div className="flex items-start gap-4">
-                <div
-                  className={`shrink-0 w-11 h-11 rounded-lg ${item.bgColor} flex items-center justify-center`}
-                >
-                  <item.icon size={20} className={item.color} />
-                </div>
-                <div className="min-w-0">
-                  <h3 className="font-display text-base font-semibold text-text-primary group-hover:text-gold-400 transition-colors">
-                    {item.title}
+              <div>
+                <Quote size={28} className="text-blue-900/20 mb-4" />
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic">
+                  &ldquo;{student.quote}&rdquo;
+                </p>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-slate-200 space-y-2">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-display text-base font-bold text-[#0A192F]">
+                    {student.name}
                   </h3>
-                  <p className="mt-0.5 text-xs text-text-muted">
-                    {item.student} ·{" "}
-                    <span className={item.color}>{item.association}</span>
-                  </p>
-                  <p className="mt-3 text-sm text-text-secondary leading-relaxed">
-                    {item.description}
-                  </p>
+                  <span className="p-1 rounded-md bg-blue-100 text-blue-900">
+                    <GraduationCap size={15} />
+                  </span>
+                </div>
+                <p className="text-xs font-mono font-bold text-[#0C2340]">{student.role}</p>
+                <p className="text-[11px] text-slate-500">
+                  {student.department}
+                </p>
+
+                <div className="mt-3 pt-3 border-t border-slate-200/60 flex items-center gap-1.5 text-[11px] text-[#0C2340] font-bold">
+                  <Award size={12} className="text-[#B89758]" />
+                  <span>{student.achievement}</span>
                 </div>
               </div>
             </motion.div>
