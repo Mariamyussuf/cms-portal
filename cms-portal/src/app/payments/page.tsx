@@ -13,9 +13,12 @@ import {
   Shield,
   FileText,
   Loader2,
+  ExternalLink,
+  Search,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
 
@@ -26,6 +29,9 @@ interface FeeItem {
   amount: number; // in kobo
   status: "paid" | "unpaid";
   session: string;
+  paymentLink?: string | null;
+  associationName?: string;
+  associationLogo?: string | null;
 }
 
 interface PaymentRecord {
@@ -53,6 +59,7 @@ export default function PaymentsPage() {
   const [selectedFees, setSelectedFees] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [claimReference, setClaimReference] = useState("");
 
   useEffect(() => {
     async function loadData() {
@@ -63,7 +70,7 @@ export default function PaymentsPage() {
           if (data.feeBreakdown && data.feeBreakdown.length > 0) {
             setFees(data.feeBreakdown);
           } else {
-            // Default fallback if no database record yet
+            // Default fallback
             setFees([
               {
                 id: "default-col-due",
@@ -74,12 +81,13 @@ export default function PaymentsPage() {
                 session: "2026/2027",
               },
               {
-                id: "default-basa-due",
+                id: "default-nesa-due",
                 type: "ASSOCIATION_DUE",
-                label: "BASA Association Annual Due",
-                amount: 300000,
+                label: "NESA Association Annual Due",
+                amount: 1000000,
                 status: "unpaid",
                 session: "2026/2027",
+                paymentLink: "https://checkout.bachs.io/pay/pl_18fcf3e8c401",
               },
             ]);
           }
@@ -113,6 +121,14 @@ export default function PaymentsPage() {
 
   const handlePay = async () => {
     if (selectedFees.size === 0) return;
+
+    // If only one fee is selected and it has a direct paymentLink, we can open it!
+    const selectedList = fees.filter((f) => selectedFees.has(f.id));
+    if (selectedList.length === 1 && selectedList[0].paymentLink) {
+      window.open(selectedList[0].paymentLink, "_blank");
+      return;
+    }
+
     setIsProcessing(true);
 
     try {
@@ -138,6 +154,12 @@ export default function PaymentsPage() {
     }
   };
 
+  const handleClaimReceipt = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!claimReference.trim()) return;
+    router.push(`/payments/verify?reference=${encodeURIComponent(claimReference.trim())}&simulated=true`);
+  };
+
   return (
     <>
       <SiteHeader />
@@ -161,7 +183,7 @@ export default function PaymentsPage() {
               Payment Portal
             </h1>
             <p className="mt-2 text-text-secondary">
-              Pay your college and association dues securely via Paystack.
+              Pay your college and association dues securely and generate official stamped receipts with executive signatures.
             </p>
           </motion.div>
 
@@ -189,9 +211,9 @@ export default function PaymentsPage() {
 
                   <div className="divide-y divide-border">
                     {fees.map((fee) => (
-                      <label
+                      <div
                         key={fee.id}
-                        className={`flex items-center gap-4 px-6 py-5 cursor-pointer transition-colors ${
+                        className={`flex items-center gap-4 px-6 py-5 transition-colors ${
                           fee.status === "paid"
                             ? "opacity-60 bg-bg-tertiary/20"
                             : "hover:bg-bg-tertiary/50"
@@ -202,19 +224,32 @@ export default function PaymentsPage() {
                           checked={selectedFees.has(fee.id)}
                           onChange={() => toggleFee(fee.id)}
                           disabled={fee.status === "paid"}
-                          className="w-5 h-5 rounded border-border bg-bg-tertiary accent-gold-500 cursor-pointer"
+                          className="w-5 h-5 rounded border-border bg-bg-tertiary accent-gold-500 cursor-pointer shrink-0"
                         />
 
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-text-primary">
                             {fee.label}
                           </p>
-                          <p className="text-xs text-text-muted mt-0.5">
-                            {fee.session}
-                          </p>
+                          <div className="flex items-center gap-3 mt-1">
+                            <span className="text-xs text-text-muted">
+                              {fee.session}
+                            </span>
+                            {fee.paymentLink && fee.status !== "paid" && (
+                              <a
+                                href={fee.paymentLink}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 text-[11px] font-semibold text-gold-400 hover:text-gold-300 underline"
+                              >
+                                Pay via Direct Link
+                                <ExternalLink size={10} />
+                              </a>
+                            )}
+                          </div>
                         </div>
 
-                        <div className="text-right">
+                        <div className="text-right shrink-0">
                           <p className="text-sm font-semibold text-text-primary tabular">
                             {formatKobo(fee.amount)}
                           </p>
@@ -232,7 +267,7 @@ export default function PaymentsPage() {
                             )}
                           </div>
                         </div>
-                      </label>
+                      </div>
                     ))}
                   </div>
 
@@ -255,17 +290,17 @@ export default function PaymentsPage() {
                       leftIcon={<CreditCard size={18} />}
                     >
                       {isProcessing
-                        ? "Initializing Gateway..."
-                        : `Pay ${formatKobo(selectedTotal)} with Paystack`}
+                        ? "Initializing Payment..."
+                        : `Proceed to Pay ${formatKobo(selectedTotal)}`}
                     </Button>
                     <div className="mt-3 flex items-center justify-center gap-4 text-xs text-text-muted">
                       <span className="inline-flex items-center gap-1">
                         <Shield size={12} />
-                        Secured by Paystack
+                        Official Bells Portal
                       </span>
                       <span className="inline-flex items-center gap-1">
                         <FileText size={12} />
-                        Instant digital receipt
+                        Stamped Digital Receipt
                       </span>
                     </div>
                   </div>
@@ -278,10 +313,13 @@ export default function PaymentsPage() {
                   transition={{ duration: 0.5, delay: 0.2 }}
                   className="rounded-2xl bg-bg-secondary border border-border overflow-hidden"
                 >
-                  <div className="px-6 py-4 border-b border-border">
+                  <div className="px-6 py-4 border-b border-border flex items-center justify-between">
                     <h2 className="font-display text-lg font-semibold text-text-primary">
-                      Payment History
+                      Payment History & Receipts
                     </h2>
+                    <span className="text-xs text-text-muted">
+                      Official Records
+                    </span>
                   </div>
 
                   {history.length === 0 ? (
@@ -359,11 +397,11 @@ export default function PaymentsPage() {
                               <td className="px-6 py-4">
                                 {payment.status === "SUCCESSFUL" && (
                                   <Link
-                                    href={`/payments/verify?reference=${payment.reference}`}
-                                    className="inline-flex items-center gap-1 text-xs text-gold-400 hover:underline cursor-pointer"
+                                    href={`/receipts/${payment.reference}`}
+                                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-gold-400 hover:text-gold-300 hover:underline cursor-pointer"
                                   >
-                                    <Download size={12} />
-                                    Receipt
+                                    <Download size={13} />
+                                    Official Receipt
                                   </Link>
                                 )}
                               </td>
@@ -383,27 +421,56 @@ export default function PaymentsPage() {
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="space-y-6"
               >
+                {/* Claim Stamped Receipt */}
+                <div className="rounded-2xl bg-bg-secondary border border-border p-6 shadow-sm">
+                  <h3 className="font-display text-base font-semibold text-text-primary mb-2 flex items-center gap-2">
+                    <FileText size={18} className="text-gold-400" />
+                    Claim Stamped Receipt
+                  </h3>
+                  <p className="text-xs text-text-secondary leading-relaxed mb-4">
+                    Paid via Bachs or direct payment link? Paste your Transaction Reference below to generate your stamped official receipt.
+                  </p>
+                  <form onSubmit={handleClaimReceipt} className="space-y-3">
+                    <Input
+                      placeholder="e.g. 202413769-1759664..."
+                      value={claimReference}
+                      onChange={(e) => setClaimReference(e.target.value)}
+                      className="font-mono text-xs"
+                    />
+                    <Button
+                      type="submit"
+                      variant="secondary"
+                      size="sm"
+                      className="w-full"
+                      disabled={!claimReference.trim()}
+                      leftIcon={<Search size={14} />}
+                    >
+                      Verify & Generate Receipt
+                    </Button>
+                  </form>
+                </div>
+
                 {/* How It Works */}
                 <div className="rounded-2xl bg-bg-secondary border border-border p-6">
                   <h3 className="font-display text-base font-semibold text-text-primary mb-3">
-                    Payment Instructions
+                    Receipt Process
                   </h3>
                   <div className="space-y-4">
                     {[
                       {
                         step: "1",
-                        title: "Select your dues",
-                        desc: "Choose college due and/or association due",
+                        title: "Select or Click Due Link",
+                        desc: "Pay college due or association dues via checkout link",
                       },
                       {
                         step: "2",
-                        title: "Pay via Paystack",
-                        desc: "Card, bank transfer, USSD or bank account",
+                        title: "Payment Confirmation",
+                        desc: "Bachs confirms transaction and issues reference code",
                       },
                       {
                         step: "3",
-                        title: "Download Receipt",
-                        desc: "Official digital receipt with verification ID",
+                        title: "Instant Stamped Receipt",
+                        desc: "Verified with President & Financial Secretary digital signatures",
                       },
                     ].map((item) => (
                       <div key={item.step} className="flex gap-3">
@@ -428,17 +495,10 @@ export default function PaymentsPage() {
                 {/* Support */}
                 <div className="rounded-2xl bg-gold-500/5 border border-gold-500/20 p-6">
                   <h3 className="text-sm font-semibold text-gold-400 mb-2">
-                    Need Payment Assistance?
+                    Need Receipt Verification?
                   </h3>
                   <p className="text-xs text-text-secondary leading-relaxed">
-                    If your bank was debited but the status remains unpaid,
-                    please send your transaction reference to{" "}
-                    <a
-                      href="mailto:bursar@colmans.edu.ng"
-                      className="text-gold-400 underline"
-                    >
-                      bursar@colmans.edu.ng
-                    </a>
+                    Official receipts generated by this portal carry a cryptographic QR code for bursary and departmental clearance.
                   </p>
                 </div>
               </motion.div>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <!-- Outer Ring with University Text -->
+  <circle cx="100" cy="100" r="95" fill="#0C2340" stroke="#0284C7" stroke-width="4"/>
+  <circle cx="100" cy="100" r="76" fill="#0C2340" stroke="#F59E0B" stroke-width="2"/>
+  
+  <!-- Curved Text Path for BELLS UNIVERSITY OF TECHNOLOGY -->
+  <defs>
+    <path id="textPathTop" d="M 25 100 A 75 75 0 0 1 175 100" fill="none"/>
+    <path id="textPathBottom" d="M 175 100 A 75 75 0 0 1 25 100" fill="none"/>
+    <linearGradient id="shieldGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0284C7"/>
+      <stop offset="100%" stop-color="#0369A1"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+  </defs>
+
+  <text fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="bold" letter-spacing="1.5">
+    <textPath href="#textPathTop" startOffset="50%" text-anchor="middle">
+      BELLS UNIVERSITY OF TECHNOLOGY
+    </textPath>
+  </text>
+  
+  <text fill="#F59E0B" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="bold" letter-spacing="2">
+    <textPath href="#textPathBottom" startOffset="50%" text-anchor="middle">
+      * OTA, NIGERIA *
+    </textPath>
+  </text>
+
+  <!-- Inner Center Shield Circle -->
+  <circle cx="100" cy="100" r="62" fill="#FFFFFF" stroke="#0C2340" stroke-width="2"/>
+  
+  <!-- Heraldic Shield -->
+  <path d="M 68 70 Q 100 66 132 70 L 132 105 Q 132 135 100 148 Q 68 135 68 105 Z" 
+        fill="url(#shieldGrad)" stroke="#0C2340" stroke-width="2"/>
+
+  <!-- Gold Cross dividing shield -->
+  <path d="M 68 95 L 132 95 M 100 68 L 100 148" stroke="#F59E0B" stroke-width="3"/>
+
+  <!-- Open Book Symbol (Words of Knowledge) -->
+  <g transform="translate(85, 74) scale(0.65)">
+    <path d="M 23 3 L 13 8 L 3 3 L 3 20 L 13 25 L 23 20 Z" fill="#FFFFFF" stroke="#0C2340" stroke-width="1.5"/>
+    <path d="M 13 8 L 13 25" stroke="#0C2340" stroke-width="1.5"/>
+  </g>
+
+  <!-- Golden Bell Symbol -->
+  <g transform="translate(108, 102) scale(0.65)">
+    <path d="M 10 3 C 7 3 5 6 5 10 L 3 17 L 17 17 L 15 10 C 15 6 13 3 10 3 Z" fill="#FDE047" stroke="#0C2340" stroke-width="1.5"/>
+    <circle cx="10" cy="19" r="2" fill="#D97706"/>
+  </g>
+
+  <!-- Laurel Wreath Around Shield -->
+  <path d="M 52 110 C 48 85 60 65 72 55" stroke="#16A34A" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M 148 110 C 152 85 140 65 128 55" stroke="#16A34A" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- University Motto Banner -->
+  <g transform="translate(100, 160)">
+    <path d="M -60 -8 L 60 -8 L 52 8 L -52 8 Z" fill="#16A34A" stroke="#0C2340" stroke-width="1.5"/>
+    <text x="0" y="3" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="7.5" font-weight="bold" text-anchor="middle" letter-spacing="1">
+      WORDS OF KNOWLEDGE
+    </text>
+  </g>
+</svg>

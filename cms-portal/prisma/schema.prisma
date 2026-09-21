@@ -123,6 +123,7 @@ model Association {
   logoUrl     String?
   bannerUrl   String?
   colorHex    String? // lets each association tint its own mini-page
+  officialEmail String? // official contact email shown on receipt (e.g. nesabellstech@gmail.com)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -141,6 +142,7 @@ model AssociationLeader {
   name          String
   position      String // e.g. "President", "Financial Secretary"
   photoUrl      String?
+  signatureUrl  String?     // vector SVG or image signature
   socialLinks   String? // JSON string of social links
   order         Int         @default(0)
   createdAt     DateTime    @default(now())
@@ -183,6 +185,7 @@ model AssociationDues {
   label         String // e.g. "2026/2027 Dues"
   amountKobo    Int // stored in kobo to avoid float issues
   session       String // e.g. "2026/2027"
+  paymentLink   String? // e.g. "https://checkout.bachs.io/pay/pl_18fcf3e8c401"
   isActive      Boolean     @default(true)
   createdAt     DateTime    @default(now())
 
@@ -234,6 +237,7 @@ model FeeStructure {
   level        String?
   amountKobo   Int
   session      String // e.g. "2026/2027"
+  paymentLink  String? // e.g. hosted payment link
   isActive     Boolean     @default(true)
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
@@ -267,12 +271,14 @@ model Payment {
 }
 
 model Receipt {
-  id         String   @id @default(cuid())
-  paymentId  String   @unique
-  payment    Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
-  receiptNo  String   @unique
-  issuedAt   DateTime @default(now())
-  pdfUrl     String?
+  id          String   @id @default(cuid())
+  paymentId   String   @unique
+  payment     Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  receiptNo   String   @unique
+  referenceNo String?
+  amountWords String?
+  issuedAt    DateTime @default(now())
+  pdfUrl      String?
 }
 
 // ────────────────────────────────────────────────────────────

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80" width="100%" height="100%">
+  <!-- Stylized Financial Secretary Signature matching reference receipt (circular loop + flourish slash) -->
+  <path d="M 50 42 C 40 28 55 18 70 24 C 85 30 88 50 72 56 C 58 60 48 45 54 32 C 60 20 80 18 95 35 L 120 48 M 38 48 L 115 28 M 72 58 Q 90 68 118 64" 
+        fill="none" 
+        stroke="#0F172A" 
+        stroke-width="2.6" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+</svg>

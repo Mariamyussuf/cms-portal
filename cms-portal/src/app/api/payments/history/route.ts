@@ -67,6 +67,7 @@ export async function GET() {
         label: f.label,
         amount: f.amountKobo,
         session: f.session,
+        paymentLink: f.paymentLink || null,
         status: successfulPaymentFeeIds.has(f.id)
           ? ("paid" as const)
           : ("unpaid" as const),
@@ -77,6 +78,9 @@ export async function GET() {
         label: `${f.association.name} — ${f.label}`,
         amount: f.amountKobo,
         session: f.session,
+        paymentLink: f.paymentLink || null,
+        associationName: f.association.name,
+        associationLogo: f.association.logoUrl,
         status: successfulPaymentFeeIds.has(f.id)
           ? ("paid" as const)
           : ("unpaid" as const),

@@ -1,19 +1,7 @@
 import type { Metadata } from "next";
-import { Inter, Outfit } from "next/font/google";
 import { Toaster } from "sonner";
 import { SessionProvider } from "@/components/providers/session-provider";
 import "./globals.css";
-
-const outfit = Outfit({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-});
-
-const inter = Inter({
-  variable: "--font-body",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "COLMANS — College of Management Sciences",
@@ -32,10 +20,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${outfit.variable} ${inter.variable} h-full antialiased`}
-    >
+    <html lang="en" className="h-full antialiased font-sans">
       <body className="min-h-full flex flex-col">
         <SessionProvider>
           {children}

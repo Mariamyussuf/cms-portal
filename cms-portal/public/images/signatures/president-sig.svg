@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80" width="100%" height="100%">
+  <!-- Stylized President Signature resembling the reference image (DJS/Oluwaseun) -->
+  <path d="M 20 50 L 35 18 L 52 46 Q 65 15 80 32 Q 95 48 108 25 M 32 36 L 68 32 M 82 28 Q 110 5 135 40 L 148 55 M 65 62 Q 100 58 135 60" 
+        fill="none" 
+        stroke="#0F172A" 
+        stroke-width="2.6" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+</svg>
